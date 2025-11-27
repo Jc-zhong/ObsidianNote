@@ -7,31 +7,38 @@
 
 ## **2、openjdk-8 的安装**
 
+```shell
 sudo apt-get install openjdk-8-jdk
+```
 
 ## **3、设置默认 java 和  javac （可选）**
 
 由于本人当前 ubuntu 上没有安装其他版本的 jdk ，所以跳过此步骤
+```shell
 sudo update-altematives --config java
 sudo update-altematives --config javac
+```
 
 ## **4、检查版本**
 
+```shell
 java -version
 
-// 打印如下：
-openjdk version "1.8.0_252"
-OpenJDK Runtime Environment(build 1.8.0_252-8u252-b09-1~16.04-b09)
-OpenJDK 64-Bit Server VM(build 25.252-b09,mixed mode)
+# 打印如下：
+# openjdk version "1.8.0_252"
+# OpenJDK Runtime Environment(build 1.8.0_252-8u252-b09-1~16.04-b09)
+# OpenJDK 64-Bit Server VM(build 25.252-b09,mixed mode)
+```
 
 ## 5、安装所需要的软件安装包
 
+```shell
 sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zliblg-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip
-
+```
 or
-
+```shell
 sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip
-
+```
 
 ## 6、源码下载
 
@@ -48,12 +55,15 @@ sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zl
 百度云下载相关的源码包，进行本低解压，下载里面提供的 android-8.1.0_r1.7z 文件
 下载完成后在 ubuntu 系统对应的下载目录启动终端命令行，输入如下指令进行解压
 
+```shell
 sudo apt-get install p7zip
 7zr x android-8.1.0_r1.7z
-会有一个 overwirte 提示，直接输入 y 同意即可
+# 会有一个 overwirte 提示，直接输入 y 同意即可
+```
 
 ## 7、编译 AOSP 代码
 
+```shell
 1、  . buildnvsetup.sh       
 2、  lunch
 // 这里我们选择：6   --> aosp_x86_64
@@ -63,6 +73,7 @@ sudo apt-get install p7zip
 
 4、emulator  
 // 执行拉起模拟器的命令
+```
 
 ![[01-Emulator-01.png|200x50]]
 

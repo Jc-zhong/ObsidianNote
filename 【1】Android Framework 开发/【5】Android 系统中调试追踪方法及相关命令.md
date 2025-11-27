@@ -24,13 +24,13 @@
 
 ![[05-log-ansyc2.png]]
 
-在 ActivityThread,java 中的  scheduleLaunchActivity 方法中发送了 handle 消息
+在 **ActivityThread.java **中的  **scheduleLaunchActivity** 方法中发送了 handle 消息
 
 ![[05-ActThread-code-01.png|300x100]]
 
 ![[05-ActThread-code-02.png|300x100]]
 
-而这个 scheduleLaunchActivity 方法是属于 ApplicationThread 类，这是一个继承了 IApplicationThread.Stub 类的类，说明这个方法是通过跨进程调用过来的，并不是自己触发的。
+而这个 **scheduleLaunchActivity** 方法是属于 **ApplicationThread** 类，这是一个继承了 **IApplicationThread.Stub** 类的类，说明这个方法是通过跨进程调用过来的，并不是自己触发的。
 
 ![[05-ActThread-code-03.png|300x100]]
 
@@ -40,18 +40,20 @@
 
 ![[05-log-ansyc3.png]]
 
-此时我们可以通过查代码的方式继续追踪，搜索关键方法 scheduleLaunchActivity
+此时我们可以通过查代码的方式继续追踪，搜索关键方法 **scheduleLaunchActivity**
 
-进入到源码目录
+```shell
+# 进入到源码目录
 cd framework/base
 grep "\.scheduleLaunchActivity" ./ -rn
+```
 
-（这里需要注意的是  调用方法时前面肯定会包含 . ，因此我们搜索也把该 .  加上，并为其添加转义符号 \ ）
+**（这里需要注意的是  调用方法时前面肯定会包含 . ，因此我们搜索也把该 .  加上，并为其添加转义符号 \ ）**
 
 ![[05-log-ansyc4.png]]
 
-这样我们就可以知道 scheduleLaunchActivity 是在
-framework/base/services/java/com/android/server/am/ActivityStackSupervisor.java
+这样我们就可以知道 **scheduleLaunchActivity** 是在
+`framework/base/services/java/com/android/server/am/ActivityStackSupervisor.java`
 中的 1457/1458 行调用的
 
 ![[05-ActStackSV-code.png]]
@@ -87,8 +89,8 @@ ActivityManagerService.java 的 startActivity 方法
 ![[05-exampzj.png]]
 
 日志分析：
-1、在 联系人APP进程 的 PeopleActivity 中点击启动了另一个 ContactEditorActivity
-2、联系人APP进程 (2166)发送了一个启动 Activity 的消息给到 system_server 服务端(1527)中的 AMS 组件
-3、AMS 接收到消息后，经过一系列处理，再把消息发送回给 联系人APP进程，由它自身的 ActivityThread 类处理
+1. 在 联系人APP进程 的 PeopleActivity 中点击启动了另一个 ContactEditorActivity
+2. 联系人APP进程 (2166)发送了一个启动 Activity 的消息给到 system_server 服务端(1527)中的 AMS 组件
+3. AMS 接收到消息后，经过一系列处理，再把消息发送回给 联系人APP进程，由它自身的 ActivityThread 类处理
 
 ![[05-log-ansyc5.png]]
