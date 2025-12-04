@@ -1,35 +1,33 @@
-## aidl的一些关键字
-
-### 1、oneway介绍
+### 1、oneway 介绍
 
 **oneway** 关键字用于修饰远程调用的行为，被 **oneway** 修饰了的方法不可以有返回值，也不可以有带 **out** 或 **inout** 的参数。
-使用 **oneway** 时，远程调用不会阻塞；它只是发送事务数据并立即返回。接口的实现最终接收此调用时，是以正常远程调用形式将其作为来自 **Binder** 线程池的常规调用进行接收。
+**使用 oneway 时，远程调用不会阻塞；它只是发送事务数据并立即返回**。接口的实现最终接收此调用时，是以正常远程调用形式将其作为来自 **Binder** 线程池的常规调用进行接收。
 
-### 2、in，out，inout介绍
+### 2、in，out，inout 介绍
 
 **in、out、inout** 表示跨进程通信中数据的流向（基本数据类型默认是 **in** ，非基本数据类型可以使用其它数据流向 **out、inout** ）。
 
-| 关键字       | 描述                          |                                            |
-| --------- | --------------------------- | ------------------------------------------ |
-| **in**    | **表示数据只能由客户端流向服务端**         | **表现为服务端修改此参数，不会影响客户端的对象**                     |
-| **out**   | **表示数据只能由客户端流向服务端**         | **表现为服务端收到的参数是空对象<br>并且服务端修改对象后客户端会同步变动**      |
-| **inout** | **表示数据可在服务端与客户端之间<br>双向流通** | **表现为服务端能接收到客户端传来的完整对象<br>并且服务端修改对象后客户端会同步变动** |
-
+| 关键字       | 描述                               |                                                |
+| --------- | -------------------------------- | ---------------------------------------------- |
+| **in**    | **表示数据只能由 <br>客户端 -> 服务端**       | **表现为服务端修改此参数<br>不会影响客户端的对象**                  |
+| **out**   | **表示数据只能由 <br>服务端 -> 客户端**       | **表现为服务端收到的参数是空对象<br>并且服务端修改对象后客户端会同步变动**      |
+| **inout** | **表示数据可双向流通**<br>**服务端 <-> 客户端** | **表现为服务端能接收到客户端传来的完整对象<br>并且服务端修改对象后客户端会同步变动** |
 
 注意如果 `aidl` 中发现对象类型参数可以不带 **in，out，inout** 任何一个，那么它一定属于默认 **in** 类型，而且也不能强制给其加上 **out** 或 **inout**
 具体这里可以看 **google** 官方文档的原话：
+**（注意文档要用英文来看，不要使用中文，会有翻译歧义！！）**
 
 [Android 接口定义语言 (AIDL)  |  Background work  |  Android Developers](https://developer.android.google.cn/develop/background-work/services/aidl?hl=zh-cn#Create)
 
 ```bash
 When defining your service interface, be aware that:
 
-Methods can take zero or more parameters, and return a value or void.
-All non-primitive parameters require a directional tag indicating which way the data goes. Either in, out, or inout (see the example below).
-Primitives, String, IBinder, and AIDL-generated interfaces are in by default, and cannot be otherwise.
+· Methods can take zero or more parameters, and return a value or void.
+· All non-primitive parameters require a directional tag indicating which way the data goes. Either in, out, or inout (see the example below).
+  Primitives, String, IBinder, and AIDL-generated interfaces are in by default, and cannot be otherwise.
 ```
 
-`Primitives, String, IBinder, and AIDL-generated interfaces are in by default` —这句就说明了元数据类型，**String ，IBinder，还有AIDL生成的接口那默认就是in，不能为其他**
+`Primitives, String, IBinder, and AIDL-generated interfaces are in by default` —这句就说明了元数据类型，**String ，IBinder，还有 AIDL 生成的接口那默认就是 in，不能为其他**
 
 ## 3、Binder跨进程双向通信的实现
 
@@ -51,18 +49,27 @@ Primitives, String, IBinder, and AIDL-generated interfaces are in by default, an
 **Bp端** 只需要覆写 `binderDied()` 方法，实现一些后尾清除类的工作，则在 **Bn端** 死掉后，会回调`binderDied()` 进行相应处理。
 
 ```cpp
+// 监听客户端的进程是否死亡
+// 在服务端的 AIDL 绑定的回调接口方法使用 callback 参数进行监听
  @Override
 public void setCallback(IChangeCallback callback) throws RemoteException {
 	mCallBack = callback;
-	// 监听客户端的进程是否死了
 	mCallBack.asBinder().linkToDeath(new DeathRecipient() {
 		@Override
 		public void binderDied() {
-			Log.i("test","linkToDeath binderDied");
+			Log.i("test","client binderDied");
 		}
 	},0);
 }
 
+// 监听服务端的进程是否死亡
+// 在客户端的 onServiceConnected() 回调方法中，使用传回来的 service 参数进行监听
+service.linkToDeath(new IBinder.DeathRecipient() {
+	 @Override
+	 public void binderDied(){
+		 Log.i("test","Service binderDied");
+	 }
+}, 0);
 ```
 
 
