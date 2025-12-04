@@ -7,10 +7,10 @@
 
 **给模拟器刷机需要的 img 文件**
 
-|   |   |   |
-|---|---|---|
-|**encryptionkey.img**|**kernel-ranchu**|**ramdisk.img**|
-|**system-qemu.img**|**usderdata.img**|**vendor-qemu.img**|
+|                       |                   |                     |
+| --------------------- | ----------------- | ------------------- |
+| **encryptionkey.img** | **kernel-ranchu** | **ramdisk.img**     |
+| **system-qemu.img**   | **usderdata.img** | **vendor-qemu.img** |
 
 **讲其拷贝到 Windows 上（ 通过 共享文件（映射网络驱动器） 的方式 ）**
 
