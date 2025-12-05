@@ -13,7 +13,7 @@
 注册监听系统的解锁 **ACTION_USER_UNLOCKED** 广播，根据这个条件来触发检测，本质上这里其实 **FallbackHome** 就是一直在不断的检测系统中的获取的 **Home** 类型的 **Activtiy** 还是不是自己，如果不是了，比如是 **Launcher** ，那说明系统已经可以启动真正 **Launcher** 了。
 但细心同学会发现，这个只看到了 **FallbackHome** finish自己，并没有看到有启动 **Launcher** 的操作？那 **Launcher** 到底是怎么启动的呢？
 
-## 2、 Launcher的真正启动
+## 2、 Launcher 的真正启动
 
 这里如果正面分析可能会较为困难，即使我把对应的调用流程又重新给大家写一遍对大家作用也不是很大，这里给大家用我们的老方法打日志堆栈的方式来辅助分析定位真正的 **Launcher** 是怎么启动的：
 上节课已经分析了 **FallbackHome** 启动是 **AMS** 的 `startHomeActivityLocked`，那么有理由相信 **Launcher** 的启动一样会调用这个方法，所以在这个方法加入堆栈日志打印，看到了系统启动要进入 **Launcher** 时，有如下打印：
