@@ -29,7 +29,7 @@ struct sockaddr_un {
   sa_family_t sun_family; /* AF_LOCAL */
   char sun_path[104]; /* null-terminated pathname */
 };
-// sun_path 主要传入一个绝对路径就可以，因为不需要 **ip** 进行网络通信。  
+// sun_path 主要传入一个绝对路径就可以，因为不需要 ip 进行网络通信。  
 // 其他部分基本和网络 socket 一样  
 ```
 
@@ -61,12 +61,10 @@ int main() {
 	int len;
 	char buf[100];
 	int sockfd, n;
-
 	if ((sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0){
 			perror("client socket error");
 			exit(1);
 	}
-
     memset(&serun, 0, sizeof(serun));
     serun.sun_family = AF_UNIX;
     strncpy(serun.sun_path,server_path ,
