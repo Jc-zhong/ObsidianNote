@@ -80,7 +80,7 @@ int close(int fd);
 
 ### 4、socket 通信的实战代码
 
-服务端代码：
+服务端代码：`inet_server.c`
 
 ```c
 #include <stdio.h>
@@ -134,7 +134,7 @@ int main(void) {
 }
 ```
 
-客户端代码：
+客户端代码：`inet_client.c`
 
 ```c
 #include <stdio.h>
@@ -179,9 +179,26 @@ int main(int argc, char *argv[]) {
 }
 ```
 
+（ 另外需要注意的是， `write 、 read` 方法是会阻塞的 ）
+
+```shell
+# 编译源文件
+gcc inet_server.c -o inet_server
+gcc inet_client.c -o inet_client
+
+# 执行 : 
+# 服务端 先启动，然后 客户端 后启动
+# 携带参数为 “hello”，服务端把它改写大写的 “HELLO"
+./inet_server
+./inet_client --hello
+```
+
 运行结果：  
-先运行服务端，在运行客户端
-携带参数为 **“hello”**，服务端把它改写大写的 **“HELLO"**
+
 
 ![[30-image4.png]]
 
+
+其他：
+
+[正确执行Linux系统中二进制文件的方法与技巧 - OSCHINA - 中文开源技术交流社区](https://my.oschina.net/emacs_8900293/blog/17542274)

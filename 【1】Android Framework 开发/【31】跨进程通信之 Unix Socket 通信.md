@@ -39,7 +39,7 @@ struct sockaddr_un {
 
 ### 3、实战Unix Socket通信
 
-客户端代码：
+客户端代码： `unix_client.c`
 
 ```c
 #include <stdlib.h>
@@ -78,8 +78,9 @@ int main() {
     while(fgets(buf, MAXLINE, stdin) != NULL) {
          write(sockfd, buf, strlen(buf));
          n = read(sockfd, buf, MAXLINE);
-         if ( n < 0 ) {
+         if ( n <= 0 ) {
             printf("the other side has been closed.\n");
+            break;
          }else {
             printf("received from server: %s \n",buf);
          }
@@ -90,7 +91,7 @@ int main() {
 }
 ```
 
-服务端代码：
+服务端代码：`unix_server.c`
 
 ```c
 #include <stdlib.h>
@@ -121,7 +122,7 @@ int main() {
     serun.sun_family = AF_UNIX;
     strncpy(serun.sun_path,socket_path ,
                    sizeof(serun.sun_path) - 1);
-    //这个相当于把之前的地址要移除，不然上一个server没有结束，移除会报错already in use
+    // 这个相当于把之前的地址要移除，不然上一个 server 没有结束，移除会报错 already in use
     unlink(socket_path);
 	if (bind(listenfd, (struct sockaddr *)&serun, 
 		sizeof(struct sockaddr_un)) < 0) {
@@ -154,7 +155,13 @@ int main() {
                 break;
             }
             printf("received: %s\n", buf);
+            // 接收到 quit 时退出循环，与客户端断开连接
+            if(strcmp(buf,"quit") == 0) {
+	            printf("received: quit , break while \n");
+	            break;
+            }
             for(i = 0; i < n; i++) {
+	            // 将字符转成大写
                 buf[i] = toupper(buf[i]);
             }
             write(connfd, buf, n);
@@ -166,9 +173,21 @@ int main() {
 }
 ```
 
-结果：  
-服务端 先启动，然后 客户端 后启动
-然后输入任何一个字符 **“hello”** 会立即受到 服务端 回复的大小字母 **“HELLO”**
+（ 另外需要注意的是， `write 、 read` 方法是会阻塞的 ）
+
+```shell
+# 编译源文件
+gcc unix_server.c -o unix_server
+gcc unix_client.c -o unix_client
+
+# 执行 : 
+# 服务端 先启动，然后 客户端 后启动
+# 然后输入任何一个字符 “hello” 会立即受到 服务端 回复的大小字母 “HELLO”
+./unix_server
+./unix_client
+```
+
+结果： 
 
 ![[31-image2.png]]
 

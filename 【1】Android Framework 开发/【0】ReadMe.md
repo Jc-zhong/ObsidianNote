@@ -13,9 +13,11 @@
 **【8】~【24】Framework 实战开发 一**
 	系统内置应用、开机动画、Native 层 Thread 实现方案、Launcher 启动专题
 
-**【25】~【】Framework 实战开发 二**
-	Binder 机制原理、AIDL 源码分析、AIDL 关键字分析、Messenger、socket 通信
+**【25】~【32】Framework 实战开发 二**
+	Binder 机制原理、AIDL 源码分析、AIDL 关键字分析、Messenger、Socket 通信
 
+**【33】~【40】Framework 实战开发 三**
+	epoll 跨进程通信
 
 
 
